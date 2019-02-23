@@ -1,0 +1,48 @@
+<link rel="import" href="anything-finder.html">
+
+<dom-module id="app-shell">
+
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 1rem;
+      }
+    </style>
+
+    <h1>Bienvenido al buscador de [[topic]]</h1>
+
+    <anything-finder></anything-finder>
+  </template>
+
+  <script>
+    class AppShell extends Polymer.Element {
+
+      static get is() {
+        return "app-shell";
+      }
+
+      static get properties() {
+        return {
+          filmName: {
+            type: String,
+          },
+          topic: {
+            type: String,
+            value: 'Peliculas'
+          }
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.shadowRoot.querySelector('anything-finder').addEventListener('search', e => {
+          this.filmName = e.detail.value;
+          console.log(`Texto metido en el input: ${this.filmName}`);
+        });
+      }
+    }
+    customElements.define(AppShell.is, AppShell);
+  </script>
+
+</dom-module>

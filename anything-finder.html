@@ -1,0 +1,72 @@
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+
+<dom-module id="anything-finder">
+
+  <template>
+    <style>
+      :host {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        margin-bottom: 20px;
+        box-shadow: 1px 1px 4px #999;
+      }
+
+      .input {
+        width: 90%;
+      }
+
+      .btn {
+        background-color: #2a45be;
+        color: #fff;
+        box-shadow: 1px 1px 4px #999;
+      }
+    </style>
+
+    <paper-input class="input" label="[[topic]]" value="{{valueInput}}" on-keyup="keyUpSearch"></paper-input>
+    <paper-button class="btn" disabled$="[[!valueInput.length]]" raised on-click="doSearch">buscar</paper-button>
+
+  </template>
+
+  <script>
+    class AnythingFinder extends Polymer.Element {
+
+      static get is() {
+        return "anything-finder";
+      }
+
+      static get properties() {
+        return {
+          valueInput: {
+            type: String,
+            value: '',
+          },
+          topic: {
+            type: String,
+            value: 'Inserte titulo de la pelicula:'
+          }
+        }
+      }
+
+      doSearch() {
+        this.dispatchEvent(new CustomEvent('search', {
+          detail: {
+            value: this.valueInput
+          },
+          bubbles: true,
+          composed: true
+        }));
+      }
+
+      keyUpSearch(event) {
+        if (event.keyCode == 13) {
+          this.doSearch();
+        }
+      }
+
+    }
+    customElements.define(AnythingFinder.is, AnythingFinder);
+  </script>
+
+</dom-module>

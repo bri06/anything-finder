@@ -8,7 +8,47 @@
         justify-content: center;
         grid-gap: 30px;
       }
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #797676;
+        box-shadow: 1px 1px 4px #999;
+      }
+
+      .info-item {
+        background-color: #f3efef;
+        margin: 0;
+        padding: 10px;
+      }
+
+      img {
+        height: 420px;
+        width: 250px;
+      }
+
+      .error-msg {
+        color: #D8000C;
+        background-color: #FFD2D2;
+        padding: 12px;
+      }
     </style>
+    <template is="dom-if" if="{{items.length}}">
+      <template is="dom-repeat" items="{{items}}">
+        <div class="item">
+          <img src="[[item.Poster]]" alt="">
+          <div class="info-item">
+            <h3>[[item.Title]]</h3>
+            <article>[[item.Year]]</article>
+          </div>
+        </div>
+      </template>
+    </template>
+    <template is="dom-if" if="{{!items.length}}">
+      <p class="error-msg">{{error}}</p>
+    </template>
+
 
   </template>
 
@@ -21,11 +61,15 @@
 
       static get properties() {
         return {
-          films: {
+          items: {
             type: Array
+          },
+          error: {
+            type: String
           }
         }
       }
+
     }
     customElements.define(ListItems.is, ListItems);
   </script>

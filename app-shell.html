@@ -1,5 +1,6 @@
 <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="list-items.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="anything-finder.html">
 
 <dom-module id="app-shell">
@@ -15,8 +16,13 @@
     <h1>Welcome to the [[topic]] search bro</h1>
 
     <anything-finder></anything-finder>
-    <iron-ajax></iron-ajax>
-    <list-items items="[[films]]" error="[[error]]"></list-items>
+    <iron-ajax loading="{{loading}}"></iron-ajax>
+    <template is="dom-if" if="[[loading]]">
+      <paper-spinner class="load" active></paper-spinner>
+    </template>
+    <template is="dom-if" if="[[!loading]]">
+      <list-items items="[[films]]" error="[[error]]"></list-items>
+    </template>
   </template>
 
   <script>
@@ -28,17 +34,12 @@
 
       static get properties() {
         return {
-          filmName: {
-            type: String,
-          },
-          url: {
-            type: String
-          },
-          films: {
-            type: Object
-          },
-          error: {
-            type: String
+          filmName: String,
+          url: String,
+          films: Object,
+          error: String,
+          loading: {
+            type: Boolean
           },
           topic: {
             type: String,

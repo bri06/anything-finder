@@ -1,3 +1,5 @@
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="list-items.html">
 <link rel="import" href="anything-finder.html">
 
 <dom-module id="app-shell">
@@ -10,9 +12,11 @@
       }
     </style>
 
-    <h1>Bienvenido al buscador de [[topic]]</h1>
+    <h1>Welcome to the [[topic]] search bro</h1>
 
     <anything-finder></anything-finder>
+    <iron-ajax></iron-ajax>
+    <list-items items="[[films]]" error="[[error]]"></list-items>
   </template>
 
   <script>
@@ -27,18 +31,38 @@
           filmName: {
             type: String,
           },
+          url: {
+            type: String
+          },
+          films: {
+            type: Object
+          },
+          error: {
+            type: String
+          },
           topic: {
             type: String,
-            value: 'Peliculas'
+            value: 'movie'
           }
         }
       }
-
       ready() {
         super.ready();
-        this.shadowRoot.querySelector('anything-finder').addEventListener('search', e => {
+        this.addEventListener('searchPerform', async (e) => {
           this.filmName = e.detail.value;
-          console.log(`Texto metido en el input: ${this.filmName}`);
+          const ironAjax = this.shadowRoot.querySelector('iron-ajax');
+          ironAjax.url = `https://www.omdbapi.com/?s=${this.filmName}&plot=full&apikey=e477ed6a`;
+          try {
+            const res = await ironAjax.generateRequest().completes;
+            if (!!res.response.Search) {
+              this.films = res.response.Search;
+            } else {
+              this.films = [];
+              this.error = res.response.Error;
+            }
+          } catch (err) {
+            console.error(err);
+          }
         });
       }
     }

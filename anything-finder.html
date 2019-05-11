@@ -25,7 +25,7 @@
     </style>
 
     <paper-input class="input" label="[[topic]]" value="{{valueInput}}" on-keyup="keyUpSearch"></paper-input>
-    <paper-button class="btn" disabled$="[[!valueInput.length]]" raised on-click="doSearch">buscar</paper-button>
+    <paper-button class="btn" disabled$="[[!valueInput.length]]" raised on-click="doSearch">search</paper-button>
 
   </template>
 
@@ -44,13 +44,13 @@
           },
           topic: {
             type: String,
-            value: 'Inserte titulo de la pelicula:'
+            value: 'Insert title of the movie:'
           }
         }
       }
 
       doSearch() {
-        this.dispatchEvent(new CustomEvent('search', {
+        this.dispatchEvent(new CustomEvent('searchPerform', {
           detail: {
             value: this.valueInput
           },
@@ -59,8 +59,8 @@
         }));
       }
 
-      keyUpSearch(event) {
-        if (event.keyCode == 13) {
+      keyUpSearch(e) {
+        if (e.keyCode == 13) {
           this.doSearch();
         }
       }

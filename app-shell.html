@@ -17,11 +17,9 @@
 
     <anything-finder></anything-finder>
     <iron-ajax loading="{{loading}}"></iron-ajax>
-    <template is="dom-if" if="[[loading]]">
-      <paper-spinner class="load" active></paper-spinner>
-    </template>
+    <paper-spinner active=[[loading]]></paper-spinner>
     <template is="dom-if" if="[[!loading]]">
-      <list-items items="[[films]]" error="[[error]]"></list-items>
+      <list-items items="[[films]]" error="{{error}}"></list-items>
     </template>
   </template>
 
@@ -47,25 +45,24 @@
           }
         }
       }
+
       ready() {
         super.ready();
-        this.addEventListener('searchPerform', async (e) => {
-          this.filmName = e.detail.value;
-          const ironAjax = this.shadowRoot.querySelector('iron-ajax');
-          ironAjax.url = `https://www.omdbapi.com/?s=${this.filmName}&plot=full&apikey=e477ed6a`;
-          try {
-            const res = await ironAjax.generateRequest().completes;
-            if (!!res.response.Search) {
-              this.films = res.response.Search;
-            } else {
-              this.films = [];
-              this.error = res.response.Error;
-            }
-          } catch (err) {
-            console.error(err);
-          }
-        });
+        this.addEventListener('searchPerformed', this.findFilm);
       }
+
+      findFilm(e) {
+        this.filmName = e.detail.value;
+        const ironAjax = this.shadowRoot.querySelector('iron-ajax');
+        ironAjax.url = `https://www.omdbapi.com/?s=${this.filmName}&plot=full&apikey=e477ed6a`;
+        ironAjax.generateRequest().completes
+          .then(res => {
+            this.films = !!res.response.Search ? res.response.Search : [];
+            this.error = res.response.Error;
+          })
+          .catch(err => new Error(err));
+      }
+
     }
     customElements.define(AppShell.is, AppShell);
   </script>
